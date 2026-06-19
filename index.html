@@ -2,32 +2,12 @@
 <html lang="id">
   <head>
     <meta charset="UTF-8" />
-    <title>Login - E-Inventory</title>
+    <title>E-Inventory</title>
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
       rel="stylesheet"
     />
     <style>
-      /* CSS untuk tampilan Login */
-      .login-container {
-        height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: #f4f6f9;
-      }
-      .login-card {
-        width: 350px;
-        padding: 25px;
-        background: white;
-        border-radius: 8px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      }
-
-      /* CSS untuk Dashboard */
-      .hidden {
-        display: none !important;
-      }
       .sidebar {
         height: 100vh;
         background: #2c3e50;
@@ -35,81 +15,72 @@
         padding-top: 20px;
       }
       .sidebar p {
-        padding: 10px 20px;
+        padding: 15px 20px;
         cursor: pointer;
+        margin: 0;
+        transition: 0.3s;
       }
       .sidebar p:hover {
         background: #34495e;
       }
-      .content {
-        background: #ecf0f5;
-        min-height: 100vh;
+      .content-page {
+        display: none;
         padding: 20px;
       }
-      .info-card {
+      .active {
+        display: block;
+      }
+      .card-box {
         background: #007bff;
         color: white;
         padding: 20px;
-        border-radius: 5px;
+        border-radius: 10px;
         width: 200px;
       }
     </style>
   </head>
   <body>
-    <div id="loginPage" class="login-container">
-      <div class="login-card">
-        <h4 class="text-center">Halo Selamat Datang</h4>
-        <p class="text-center text-muted">Inventaris Barang</p>
-        <input
-          type="text"
-          id="username"
-          class="form-control mb-2"
-          placeholder="Username"
-        />
-        <input
-          type="password"
-          id="password"
-          class="form-control mb-3"
-          placeholder="Password"
-        />
-        <button class="btn btn-primary w-100" onclick="cekLogin()">
-          Login
-        </button>
-      </div>
-    </div>
-
-    <div id="dashboardPage" class="container-fluid hidden">
+    <div class="container-fluid">
       <div class="row">
         <div class="col-md-2 sidebar">
           <h5 class="text-center">E-Inventory</h5>
           <hr />
-          <p>Dashboard</p>
-          <p>Kelola Barang</p>
-          <p>Laporan</p>
+          <p onclick="showPage('dashboard')">Dashboard</p>
+          <p onclick="showPage('kelola')">Kelola Barang</p>
+          <p onclick="showPage('laporan')">Laporan</p>
           <p onclick="location.reload()" class="text-danger">Logout</p>
         </div>
-        <div class="col-md-10 content">
-          <h3>Dashboard</h3>
-          <div class="info-card">
-            <h5>Total Barang</h5>
-            <h2 id="totalBarang">0</h2>
+
+        <div class="col-md-10">
+          <div id="dashboard" class="content-page active">
+            <h3>Dashboard</h3>
+            <div class="card-box">
+              <h5>Total Barang</h5>
+              <h2 id="total">0</h2>
+            </div>
+          </div>
+
+          <div id="kelola" class="content-page">
+            <h3>Kelola Barang</h3>
+            <p>Fitur tambah/edit barang akan ada di sini.</p>
+          </div>
+
+          <div id="laporan" class="content-page">
+            <h3>Laporan</h3>
+            <p>Fitur cetak laporan akan ada di sini.</p>
           </div>
         </div>
       </div>
     </div>
 
     <script>
-      function cekLogin() {
-        const u = document.getElementById("username").value;
-        const p = document.getElementById("password").value;
-
-        // Simulasi pengecekan login (user: admin, pass: admin)
-        if (u === "admin" && p === "admin") {
-          document.getElementById("loginPage").classList.add("hidden");
-          document.getElementById("dashboardPage").classList.remove("hidden");
-        } else {
-          alert("Username atau Password salah!");
-        }
+      function showPage(pageId) {
+        // Sembunyikan semua halaman
+        document
+          .querySelectorAll(".content-page")
+          .forEach((page) => page.classList.remove("active"));
+        // Tampilkan halaman yang dipilih
+        document.getElementById(pageId).classList.add("active");
       }
     </script>
   </body>
