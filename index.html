@@ -37,10 +37,49 @@
         width: 200px;
         cursor: pointer;
       }
+      .hidden {
+        display: none;
+      }
+      .login-container {
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f4f6f9;
+      }
+      .login-card {
+        width: 350px;
+        padding: 25px;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
     </style>
   </head>
   <body>
-    <div class="container-fluid">
+    <div id="loginPage" class="login-container">
+      <div class="login-card">
+        <h4 class="text-center">Halo Selamat Datang</h4>
+        <p class="text-center text-muted">Inventaris Barang</p>
+        <input
+          type="text"
+          id="username"
+          class="form-control mb-2"
+          placeholder="Username"
+        />
+        <input
+          type="password"
+          id="password"
+          class="form-control mb-3"
+          placeholder="Password"
+        />
+        <button class="btn btn-primary w-100" onclick="cekLogin()">
+          Login
+        </button>
+      </div>
+    </div>
+
+    <div id="dashboardPage" class="container-fluid hidden">
       <div class="row">
         <div class="col-md-2 sidebar">
           <h5 class="text-center">E-Inventory</h5>
@@ -99,11 +138,10 @@
 
           <div id="laporan" class="content-page">
             <h3>Laporan Inventaris</h3>
-            <button class="btn btn-primary" onclick="window.print()">
+            <button class="btn btn-primary mb-3" onclick="window.print()">
               Cetak Laporan
             </button>
-            <hr />
-            <table class="table">
+            <table class="table table-striped">
               <thead>
                 <tr>
                   <th>Nama Barang</th>
@@ -120,6 +158,17 @@
     <script>
       let data = JSON.parse(localStorage.getItem("inventaris")) || [];
 
+      function cekLogin() {
+        const u = document.getElementById("username").value;
+        const p = document.getElementById("password").value;
+        if (u === "admin" && p === "admin") {
+          document.getElementById("loginPage").classList.add("hidden");
+          document.getElementById("dashboardPage").classList.remove("hidden");
+        } else {
+          alert("Username atau Password salah!");
+        }
+      }
+
       function showPage(id) {
         document
           .querySelectorAll(".content-page")
@@ -134,6 +183,8 @@
         if (nama && jumlah) {
           data.push({ nama, jumlah });
           localStorage.setItem("inventaris", JSON.stringify(data));
+          document.getElementById("namaBarang").value = "";
+          document.getElementById("jumlahBarang").value = "";
           updateUI();
         }
       }
@@ -147,18 +198,18 @@
       function updateUI() {
         document.getElementById("totalDisplay").innerText = data.length;
 
-        let html = "";
+        let htmlKelola = "";
         data.forEach((item, i) => {
-          html += `<tr><td>${item.nama}</td><td>${item.jumlah}</td><td><button class="btn btn-danger btn-sm" onclick="hapus(${i})">Hapus</button></td></tr>`;
+          htmlKelola += `<tr><td>${item.nama}</td><td>${item.jumlah}</td><td><button class="btn btn-danger btn-sm" onclick="hapus(${i})">Hapus</button></td></tr>`;
         });
-        document.getElementById("tabelBarang").innerHTML = html;
-        document.getElementById("tabelLaporan").innerHTML = html.replace(
-          /<td><button.*<\/button><\/td>/g,
-          "",
-        );
-      }
+        document.getElementById("tabelBarang").innerHTML = htmlKelola;
 
-      updateUI();
+        let htmlLaporan = "";
+        data.forEach((item) => {
+          htmlLaporan += `<tr><td>${item.nama}</td><td>${item.jumlah}</td></tr>`;
+        });
+        document.getElementById("tabelLaporan").innerHTML = htmlLaporan;
+      }
     </script>
   </body>
 </html>
