@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Sistem Inventaris Sederhana</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        margin: 20px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+      }
+      th {
+        background-color: #f4f4f4;
+      }
+      .form-group {
+        margin-bottom: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Inventaris Barang</h2>
+
+    <div class="form-group">
+      <input type="text" id="namaBarang" placeholder="Nama Barang" />
+      <input type="number" id="jumlahBarang" placeholder="Jumlah" />
+      <button onclick="tambahBarang()">Tambah Barang</button>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Nama Barang</th>
+          <th>Jumlah</th>
+          <th>Aksi</th>
+        </tr>
+      </thead>
+      <tbody id="daftarBarang"></tbody>
+    </table>
+
+    <script>
+      // Memuat data dari LocalStorage
+      let barang = JSON.parse(localStorage.getItem("dataBarang")) || [];
+
+      function render() {
+        const tbody = document.getElementById("daftarBarang");
+        tbody.innerHTML = "";
+        barang.forEach((item, index) => {
+          tbody.innerHTML += `<tr>
+                    <td>${item.nama}</td>
+                    <td>${item.jumlah}</td>
+                    <td><button onclick="hapusBarang(${index})">Hapus</button></td>
+                </tr>`;
+        });
+        localStorage.setItem("dataBarang", JSON.stringify(barang));
+      }
+
+      function tambahBarang() {
+        const nama = document.getElementById("namaBarang").value;
+        const jumlah = document.getElementById("jumlahBarang").value;
+        if (nama && jumlah) {
+          barang.push({ nama, jumlah });
+          render();
+        }
+      }
+
+      function hapusBarang(index) {
+        barang.splice(index, 1);
+        render();
+      }
+
+      render();
+    </script>
+  </body>
+</html>
