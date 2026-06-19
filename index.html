@@ -2,7 +2,7 @@
 <html lang="id">
   <head>
     <meta charset="UTF-8" />
-    <title>Sistem Inventaris</title>
+    <title>E-Inventory System</title>
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
       rel="stylesheet"
@@ -39,6 +39,25 @@
         cursor: pointer;
         text-align: center;
       }
+
+      @media print {
+        .sidebar,
+        .btn,
+        button,
+        input {
+          display: none !important;
+        }
+        .content-page {
+          display: none !important;
+        }
+        #laporan {
+          display: block !important;
+          width: 100%;
+          position: absolute;
+          top: 0;
+          left: 0;
+        }
+      }
     </style>
   </head>
   <body>
@@ -65,29 +84,15 @@
           </div>
 
           <div id="kelola" class="content-page">
-            <h3>Kelola Barang</h3>
-            <div class="row mb-3">
-              <div class="col-md-4">
-                <input
-                  type="text"
-                  id="namaBrg"
-                  class="form-control"
-                  placeholder="Nama Barang"
-                />
-              </div>
-              <div class="col-md-3">
-                <input
-                  type="number"
-                  id="jmlBrg"
-                  class="form-control"
-                  placeholder="Jumlah"
-                />
-              </div>
-              <div class="col-md-2">
-                <button class="btn btn-success" onclick="tambahBarang()">
-                  Tambah
-                </button>
-              </div>
+            <div class="d-flex justify-content-between mb-3">
+              <h3>Kelola Barang</h3>
+              <button
+                class="btn btn-primary"
+                data-bs-toggle="modal"
+                data-bs-target="#tambahModal"
+              >
+                + Tambah Barang
+              </button>
             </div>
             <table class="table table-bordered">
               <thead>
@@ -120,8 +125,44 @@
       </div>
     </div>
 
+    <div class="modal fade" id="tambahModal" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Tambah Barang</h5>
+          </div>
+          <div class="modal-body">
+            <input
+              type="text"
+              id="namaBrg"
+              class="form-control mb-2"
+              placeholder="Nama Barang"
+            />
+            <input
+              type="number"
+              id="jmlBrg"
+              class="form-control"
+              placeholder="Jumlah"
+            />
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" data-bs-dismiss="modal">
+              Batal
+            </button>
+            <button
+              class="btn btn-success"
+              onclick="tambahBarang()"
+              data-bs-dismiss="modal"
+            >
+              Simpan
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-      // Ambil data dari localStorage atau buat array kosong jika belum ada
       let barangList = JSON.parse(localStorage.getItem("dataBarang")) || [];
 
       function showPage(id) {
@@ -141,8 +182,6 @@
           document.getElementById("namaBrg").value = "";
           document.getElementById("jmlBrg").value = "";
           renderData();
-        } else {
-          alert("Harap isi nama dan jumlah barang!");
         }
       }
 
@@ -153,26 +192,17 @@
       }
 
       function renderData() {
-        // Update Total Barang di Dashboard
         document.getElementById("totalDisplay").innerText = barangList.length;
-
-        // Update Tabel Kelola
         let html = "";
         barangList.forEach((b, i) => {
-          html += `<tr><td>${b.nama}</td><td>${b.jml}</td>
-                     <td><button class="btn btn-danger btn-sm" onclick="hapusBarang(${i})">Hapus</button></td></tr>`;
+          html += `<tr><td>${b.nama}</td><td>${b.jml}</td><td><button class="btn btn-danger btn-sm" onclick="hapusBarang(${i})">Hapus</button></td></tr>`;
         });
         document.getElementById("tabelData").innerHTML = html;
-
-        // Update Tabel Laporan
-        let htmlLaporan = "";
-        barangList.forEach((b) => {
-          htmlLaporan += `<tr><td>${b.nama}</td><td>${b.jml}</td></tr>`;
-        });
-        document.getElementById("tabelLaporan").innerHTML = htmlLaporan;
+        document.getElementById("tabelLaporan").innerHTML = html.replace(
+          /<td><button.*<\/button><\/td>/g,
+          "",
+        );
       }
-
-      // Jalankan fungsi saat halaman dimuat
       renderData();
     </script>
   </body>
