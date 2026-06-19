@@ -73,7 +73,11 @@
           class="form-control mb-3"
           placeholder="Password"
         />
-        <button class="btn btn-primary w-100" onclick="cekLogin()">
+        <button
+          type="button"
+          class="btn btn-primary w-100"
+          onclick="cekLogin()"
+        >
           Login
         </button>
       </div>
@@ -161,8 +165,9 @@
       function cekLogin() {
         const u = document.getElementById("username").value;
         const p = document.getElementById("password").value;
-        // Pengecekan username dan password
-        if (u === "admin" && p === "admin") {
+
+        // Pengecekan username 'admin' dan password '12345'
+        if (u === "admin" && p === "12345") {
           document.getElementById("loginPage").classList.add("hidden");
           document.getElementById("dashboardPage").classList.remove("hidden");
         } else {
@@ -211,6 +216,8 @@
         });
         document.getElementById("tabelLaporan").innerHTML = htmlLaporan;
       }
+
+      updateUI();
     </script>
   </body>
 </html>
