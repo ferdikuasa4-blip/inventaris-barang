@@ -39,10 +39,10 @@
         cursor: pointer;
         text-align: center;
       }
-
       @media print {
         .sidebar,
         .btn,
+        .modal,
         button,
         input {
           display: none !important;
@@ -163,20 +163,37 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-      let barangList = JSON.parse(localStorage.getItem("dataBarang")) || [];
+      function renderData() {
+        // Ambil data dan filter sampah (data kosong)
+        let rawData = JSON.parse(localStorage.getItem("dataBarang")) || [];
+        let barangList = rawData.filter((b) => b.nama && b.jml);
 
-      function showPage(id) {
-        document
-          .querySelectorAll(".content-page")
-          .forEach((p) => p.classList.remove("active"));
-        document.getElementById(id).classList.add("active");
-        renderData();
+        // Simpan kembali data yang sudah bersih
+        localStorage.setItem("dataBarang", JSON.stringify(barangList));
+
+        // Update Dashboard
+        document.getElementById("totalDisplay").innerText = barangList.length;
+
+        // Render Tabel Kelola
+        let html = "";
+        barangList.forEach((b, i) => {
+          html += `<tr><td>${b.nama}</td><td>${b.jml}</td><td><button class="btn btn-danger btn-sm" onclick="hapusBarang(${i})">Hapus</button></td></tr>`;
+        });
+        document.getElementById("tabelData").innerHTML = html;
+
+        // Render Tabel Laporan
+        let htmlLaporan = "";
+        barangList.forEach((b) => {
+          htmlLaporan += `<tr><td>${b.nama}</td><td>${b.jml}</td></tr>`;
+        });
+        document.getElementById("tabelLaporan").innerHTML = htmlLaporan;
       }
 
       function tambahBarang() {
         let nama = document.getElementById("namaBrg").value;
         let jml = document.getElementById("jmlBrg").value;
         if (nama && jml) {
+          let barangList = JSON.parse(localStorage.getItem("dataBarang")) || [];
           barangList.push({ nama, jml });
           localStorage.setItem("dataBarang", JSON.stringify(barangList));
           document.getElementById("namaBrg").value = "";
@@ -186,23 +203,20 @@
       }
 
       function hapusBarang(index) {
+        let barangList = JSON.parse(localStorage.getItem("dataBarang")) || [];
         barangList.splice(index, 1);
         localStorage.setItem("dataBarang", JSON.stringify(barangList));
         renderData();
       }
 
-      function renderData() {
-        document.getElementById("totalDisplay").innerText = barangList.length;
-        let html = "";
-        barangList.forEach((b, i) => {
-          html += `<tr><td>${b.nama}</td><td>${b.jml}</td><td><button class="btn btn-danger btn-sm" onclick="hapusBarang(${i})">Hapus</button></td></tr>`;
-        });
-        document.getElementById("tabelData").innerHTML = html;
-        document.getElementById("tabelLaporan").innerHTML = html.replace(
-          /<td><button.*<\/button><\/td>/g,
-          "",
-        );
+      function showPage(id) {
+        document
+          .querySelectorAll(".content-page")
+          .forEach((p) => p.classList.remove("active"));
+        document.getElementById(id).classList.add("active");
+        renderData();
       }
+
       renderData();
     </script>
   </body>
