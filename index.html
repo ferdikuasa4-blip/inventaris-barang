@@ -38,7 +38,7 @@
         cursor: pointer;
       }
       .hidden {
-        display: none;
+        display: none !important;
       }
       .login-container {
         height: 100vh;
@@ -161,6 +161,7 @@
       function cekLogin() {
         const u = document.getElementById("username").value;
         const p = document.getElementById("password").value;
+        // Pengecekan username dan password
         if (u === "admin" && p === "admin") {
           document.getElementById("loginPage").classList.add("hidden");
           document.getElementById("dashboardPage").classList.remove("hidden");
